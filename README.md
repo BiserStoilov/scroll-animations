@@ -19,11 +19,11 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
     ```bash
     npm run demo
     ```
-1.  Build production whith dependencies
+1.  Build production with dependencies
     ```bash
     npm run build
     ```
-1.  Build production whithout dependencies
+1.  Build production without dependencies
     ```bash
     npm run buildWithOutDependencies
     ```
