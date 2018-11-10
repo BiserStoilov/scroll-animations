@@ -1,0 +1,54 @@
+{
+    "name": "scroll-animations",
+    "version": "1.0.0",
+    "description": "Scroll animations for Smooth Scroll Bar",
+    "main": "index.js",
+    "scripts": {
+        "build": "node_modules/.bin/webpack  --config webpack.build",
+        "buildWithOutDependencies": "node_modules/.bin/webpack  --config webpack.build.with.out.dependencies",
+        "demo": "node_modules/.bin/webpack-dev-server --inline --hot --open --config webpack.demo"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BiserStoilov/scroll-animations.git"
+    },
+    "keywords": [
+        "smooth scrollbar",
+        "aos",
+        "rellax",
+        "parallax",
+        "scroll",
+        "animation",
+        "effects"
+    ],
+    "author": "Biser Stoilov",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/BiserStoilov/scroll-animations/issues"
+    },
+    "homepage": "https://github.com/BiserStoilov/scroll-animations#readme",
+    "devDependencies": {
+        "@babel/core": "^7.1.2",
+        "@babel/preset-env": "^7.1.0",
+        "babel-loader": "^8.0.4",
+        "css-hot-loader": "^1.4.2",
+        "css-loader": "^1.0.1",
+        "file-loader": "^2.0.0",
+        "image-webpack-loader": "^4.5.0",
+        "mini-css-extract-plugin": "^0.4.4",
+        "node-sass": "^4.9.4",
+        "optimize-css-assets-webpack-plugin": "^5.0.1",
+        "path": "^0.12.7",
+        "sass-loader": "^7.1.0",
+        "uglifyjs-webpack-plugin": "^2.0.1",
+        "url-loader": "^1.1.2",
+        "webpack": "^4.24.0",
+        "webpack-cli": "^3.1.2",
+        "webpack-dev-server": "^3.1.10",
+        "webpack-node-externals": "^1.7.2"
+    },
+    "dependencies": {
+        "gsap": "^2.0.2",
+        "smooth-scrollbar": "^8.3.1"
+    }
+}
