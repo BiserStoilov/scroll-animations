@@ -1,6 +1,6 @@
 {
     "name": "scroll-animations",
-    "version": "1.0.0",
+    "version": "1.0.a",
     "description": "Scroll animations for Smooth Scroll Bar",
     "main": "index.js",
     "scripts": {
