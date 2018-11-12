@@ -53,3 +53,9 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
     // Destroy
     scrollAnimation.destroy();
     ```
+
+## NPM
+
+```bash
+npm i scroll-animations
+```
