@@ -1,4 +1,4 @@
-# SCROLL ANIMATIONS FOR SMOOTH SCROLLBAR
+# SCROLL ANIMATION FOR SMOOTH SCROLLBAR
 
 JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [Relax](https://github.com/dixonandmoe/rellax) animations on scrolling with Smooth Scrollbar
 
@@ -10,7 +10,10 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
 
 ## HOW USE
 
-1.  Download
+1.  Download or git clone
+    ```bash
+    git clone https://github.com/BiserStoilov/scroll-animations.git
+    ```
 1.  Install dependencies
     ```bash
     npm install
@@ -22,10 +25,6 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
 1.  Build production with dependencies
     ```bash
     npm run build
-    ```
-1.  Build production without dependencies
-    ```bash
-    npm run buildWithOutDependencies
     ```
 1.  Run plugin
 
@@ -40,7 +39,8 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
     ```
 
     ```javascript
-    const scrollAnimation = scrollAnimation({
+    import scrollAnimations from 'path/to/scroll-animations/src/index'; 
+    const sa = scrollAnimations({
         element: '#scroll-animation-content'
     });
     ```
@@ -49,16 +49,16 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
 
     ```javascript
     // Get Smooth Scrollbar instance
-    const smoothScrollBar = scrollAnimation.getScrollBar();
+    const smoothScrollBar = sa.getScrollBar();
     // Destroy
-    scrollAnimation.destroy();
+    sa.destroy();
     ```
 1.  Smoot ScrollBar Methods
     ```javascript
-    const scrollAnimation = scrollAnimations({    
+    const sa = scrollAnimations({
         element: '#scroll-animation-content'
     });
-    const smoothScrollBar = scrollAnimation.getScrollBar();
+    const smoothScrollBar = sa.getScrollBar();
     const element = document.querySelector('#your-element');
     smoothScrollBar.addListener(() => {
         console.log(smoothScrollBar.isVisible(element));

@@ -1,7 +1,7 @@
 import Scrollbar from 'smooth-scrollbar';
 import { TweenMax } from 'gsap';
 
-const ScrollAnimation = data => {
+const ScrollAnimations = data => {
     const options = {
         scrollBarOptions: {
             damping: 0.08,
@@ -227,10 +227,10 @@ const ScrollAnimation = data => {
     };
 };
 
-const scrollAnimation = data => {
-    const scrollAnimation = new ScrollAnimation(data);
-    scrollAnimation.init();
-    return scrollAnimation.publicMethods;
+const scrollAnimations = data => {
+    const scrollAnimations = new ScrollAnimations(data);
+    scrollAnimations.init();
+    return scrollAnimations.publicMethods;
 };
 
-export default scrollAnimation;
+export default scrollAnimations;
