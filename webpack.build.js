@@ -16,7 +16,11 @@ const modules = {
             loader: 'babel-loader',
             exclude: /node_modules/,
             options: {
-                presets: ['@babel/env']
+                presets: ['@babel/preset-env'],
+                plugins: [
+                    '@babel/plugin-proposal-class-properties',
+                    '@babel/plugin-syntax-dynamic-import'
+                ]
             }
         }
     ]

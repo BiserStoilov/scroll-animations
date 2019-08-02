@@ -17,7 +17,11 @@ const modules = {
             test: /\.js$/,
             loader: 'babel-loader',
             options: {
-                presets: ["@babel/env"]
+                presets: ["@babel/preset-env"],
+                plugins: [
+                    '@babel/plugin-proposal-class-properties',
+                    '@babel/plugin-syntax-dynamic-import'
+                ]
             }
         },
         {
