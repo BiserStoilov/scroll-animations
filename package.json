@@ -5,7 +5,6 @@
     "main": "index.js",
     "scripts": {
         "build": "node_modules/.bin/webpack  --config webpack.build",
-        "buildWithOutDependencies": "node_modules/.bin/webpack  --config webpack.build.with.out.dependencies",
         "demo": "node_modules/.bin/webpack-dev-server --inline --hot --open --config webpack.demo"
     },
     "repository": {
