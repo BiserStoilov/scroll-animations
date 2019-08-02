@@ -1,13 +1,14 @@
 import Scrollbar from 'smooth-scrollbar';
 import { TweenMax } from 'gsap';
 
-const ScrollAnimations = data => {
+const ScrollAnimation = data => {
     const options = {
         scrollBarOptions: {
-            damping: 0.03,
+            damping: 0.08,
             thumbMinSize: 3
         },
-        rellaxSpeed: 5
+        scrollBarMobileSpeed: 0.3,
+        parallaxSpeed: 5
     };
 
     const variables = {};
@@ -31,7 +32,9 @@ const ScrollAnimations = data => {
 
     const classManipulate = {
         has: (element, className) => {
-            return new RegExp(' ' + className + ' ').test(' ' + element.className + ' ');
+            return new RegExp(' ' + className + ' ').test(
+                ' ' + element.className + ' '
+            );
         },
 
         add: (element, className) => {
@@ -41,7 +44,8 @@ const ScrollAnimations = data => {
         },
 
         remove: (element, className) => {
-            let newClass = ' ' + element.className.replace(/[\t\r\n]/g, ' ') + ' ';
+            let newClass =
+                ' ' + element.className.replace(/[\t\r\n]/g, ' ') + ' ';
             if (classManipulate.has(element, className)) {
                 while (newClass.indexOf(' ' + className + ' ') >= 0) {
                     newClass = newClass.replace(' ' + className + ' ', ' ');
@@ -51,22 +55,53 @@ const ScrollAnimations = data => {
         }
     };
 
+    const isMobile = () => {
+        if (
+            navigator.userAgent.match(/Android/i) ||
+            navigator.userAgent.match(/webOS/i) ||
+            navigator.userAgent.match(/iPhone/i) ||
+            navigator.userAgent.match(/iPad/i) ||
+            navigator.userAgent.match(/iPod/i) ||
+            navigator.userAgent.match(/BlackBerry/i) ||
+            navigator.userAgent.match(/Windows Phone/i)
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     const setVariables = () => {
         variables.element = document.querySelector(data.element);
-        variables.scrollBarOptions = data.scrollBarOptions ? data.scrollBarOptions : options.scrollBarOptions;
-        variables.elements = variables.element.querySelectorAll('[data-type-animation]');
-        variables.rellaxSpeed = data.rellaxSpeed ? data.rellaxSpeed : options.rellaxSpeed;
+        variables.scrollBarOptions = data.scrollBarOptions
+            ? data.scrollBarOptions
+            : options.scrollBarOptions;
+        variables.scrollBarMobileSpeed = options.scrollBarMobileSpeed;
+        variables.elements = variables.element.querySelectorAll(
+            '[data-type-animation]'
+        );
+        variables.parentElements = [];
+        for (let a = 0; a < variables.elements.length; a++) {
+            variables.parentElements[a] = variables.elements[a].parentElement;
+        }
+        variables.parallaxSpeed = data.parallaxSpeed
+            ? data.parallaxSpeed
+            : options.parallaxSpeed;
     };
 
     const setTypeAnimation = () => {
         variables.typeAnimation = {};
-        variables.speedRellax = {};
+        variables.speedParallax = {};
         for (let a = 0; a < variables.elements.length; a++) {
-            variables.typeAnimation[a] = variables.elements[a].getAttribute('data-type-animation');
-            if (variables.typeAnimation[a] === 'rellax') {
-                variables.speedRellax[a] = variables.elements[a].getAttribute('data-rellax-speed')
-                    ? variables.elements[a].getAttribute('data-rellax-speed')
-                    : variables.rellaxSpeed;
+            variables.typeAnimation[a] = variables.elements[a].getAttribute(
+                'data-type-animation'
+            );
+            if (variables.typeAnimation[a] === 'parallax') {
+                variables.speedParallax[a] = variables.elements[a].getAttribute(
+                    'data-parallax-speed'
+                )
+                    ? variables.elements[a].getAttribute('data-parallax-speed')
+                    : variables.parallaxSpeed;
             }
         }
     };
@@ -76,9 +111,32 @@ const ScrollAnimations = data => {
         variables.elementPos = {};
         variables.elementTop = {};
         variables.realPosition = {};
-        variables.scrollBar = Scrollbar.init(variables.element, variables.scrollBarOptions);
+        if (isMobile() === true) {
+            class MobilePlugin extends ScrollbarPlugin {
+                static pluginName = 'mobile';
+                static defaultOptions = {
+                    speed: variables.scrollBarMobileSpeed
+                };
+                transformDelta(delta, fromEvent) {
+                    if (fromEvent.type !== 'touchend') {
+                        return delta;
+                    }
+
+                    return {
+                        x: delta.x * this.options.speed,
+                        y: delta.y * this.options.speed
+                    };
+                }
+            }
+            Scrollbar.use(MobilePlugin);
+        }
+        variables.scrollBar = Scrollbar.init(
+            variables.element,
+            variables.scrollBarOptions
+        );
         let position = 0,
-            direction;
+            direction,
+            isVisible;
         variables.scrollBar.addListener(status => {
             if (status.offset.y > position) {
                 direction = 'down';
@@ -86,53 +144,67 @@ const ScrollAnimations = data => {
                 direction = 'up';
             }
             position = status.offset.y;
-            let isVisible;
             for (let a = 0; a < variables.elements.length; a++) {
-                isVisible = variables.scrollBar.isVisible(variables.elements[a]);
-                if (variables.typeAnimation[a] === 'rellax') {
-                    if (isVisible) {
-                        variables.elementPos[a] = variables.elements[a].getBoundingClientRect();
-                        variables.elementTop[a] = variables.elementPos[a].top - variables.parentPos.top;
-                        variables.realPosition =
-                            variables.elementTop[a] -
-                            variables.parentPos.height / 2 +
-                            variables.elementPos[a].height / 2;
-                        TweenMax.set(variables.elements[a], {
-                            y: variables.realPosition / variables.speedRellax[a]
-                        });
-                    }
-                } else if (variables.typeAnimation[a] === 'aos') {
-                    if (isVisible && direction === 'down') {
-                        classManipulate.add(variables.elements[a], 'aos-animate');
-                    } else if (!isVisible && variables.elements[a].getBoundingClientRect().top > 0) {
-                        classManipulate.remove(variables.elements[a], 'aos-animate');
-                    }
+                isVisible = variables.scrollBar.isVisible(
+                    variables.parentElements[a]
+                );
+                if (variables.typeAnimation[a] === 'parallax' && isVisible) {
+                    variables.elementPos[a] = variables.elements[
+                        a
+                    ].getBoundingClientRect();
+                    variables.elementTop[a] =
+                        variables.elementPos[a].top - variables.parentPos.top;
+                    variables.realPosition =
+                        variables.elementTop[a] -
+                        variables.parentPos.height / 2 +
+                        variables.elementPos[a].height / 2;
+                    TweenMax.set(variables.elements[a], {
+                        y: variables.realPosition / variables.speedParallax[a]
+                    });
+                } else if (
+                    variables.typeAnimation[a] === 'aos' &&
+                    isVisible &&
+                    direction === 'down'
+                ) {
+                    classManipulate.add(variables.elements[a], 'aos-animate');
+                } else if (
+                    variables.typeAnimation[a] === 'aos' &&
+                    !isVisible &&
+                    variables.elements[a].getBoundingClientRect().top > 0
+                ) {
+                    classManipulate.remove(
+                        variables.elements[a],
+                        'aos-animate'
+                    );
                 }
             }
         });
     };
 
     const windowResize = () => {
-        setTimeout(() => {
-            let isVisible;
-            variables.parentPos = variables.element.getBoundingClientRect();
-            for (let a = 0; a < variables.elements.length; a++) {
-                if (variables.typeAnimation[a] === 'rellax') {
-                    isVisible = variables.scrollBar.isVisible(variables.elements[a]);
-                    if (isVisible) {
-                        variables.elementPos[a] = variables.elements[a].getBoundingClientRect();
-                        variables.elementTop[a] = variables.elementPos[a].top - variables.parentPos.top;
-                        variables.realPosition =
-                            variables.elementTop[a] -
-                            variables.parentPos.height / 2 +
-                            variables.elementPos[a].height / 2;
-                        TweenMax.set(variables.elements[a], {
-                            y: variables.realPosition / variables.speedRellax[a]
-                        });
-                    }
+        variables.parentPos = variables.element.getBoundingClientRect();
+        let isVisible;
+        for (let a = 0; a < variables.elements.length; a++) {
+            if (variables.typeAnimation[a] === 'parallax') {
+                isVisible = variables.scrollBar.isVisible(
+                    variables.parentElements[a]
+                );
+                if (isVisible) {
+                    variables.elementPos[a] = variables.elements[
+                        a
+                    ].getBoundingClientRect();
+                    variables.elementTop[a] =
+                        variables.elementPos[a].top - variables.parentPos.top;
+                    variables.realPosition =
+                        variables.elementTop[a] -
+                        variables.parentPos.height / 2 +
+                        variables.elementPos[a].height / 2;
+                    TweenMax.set(variables.elements[a], {
+                        y: variables.realPosition / variables.speedParallax[a]
+                    });
                 }
             }
-        }, 50);
+        }
     };
 
     const resize = () => {
@@ -155,10 +227,10 @@ const ScrollAnimations = data => {
     };
 };
 
-const scrollAnimations = data => {
-    const scrollAnimations = new ScrollAnimations(data);
-    scrollAnimations.init();
-    return scrollAnimations.publicMethods;
+const scrollAnimation = data => {
+    const scrollAnimation = new ScrollAnimation(data);
+    scrollAnimation.init();
+    return scrollAnimation.publicMethods;
 };
 
-export default scrollAnimations;
+export default scrollAnimation;
