@@ -33,8 +33,8 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
     <body data-aos-easing="ease-in-out" data-aos-duration="1000" data-aos-delay="100">
         <div id="scroll-animation-content">
             <div data-type-animation="aos" data-aos="fade-up"></div>
-            <div data-type-animation="rellax"></div>
-            <div data-type-animation="rellax" data-rellax-speed="10"></div>
+            <div data-type-animation="parallax"></div>
+            <div data-type-animation="parallax" data-parallax-speed="10"></div>
         </div>
     </body>
     ```
@@ -52,6 +52,17 @@ JavaScript plugin that implement [AOS](https://github.com/michalsnik/aos) and [R
     const smoothScrollBar = scrollAnimation.getScrollBar();
     // Destroy
     scrollAnimation.destroy();
+    ```
+1.  Smoot ScrollBar Methods
+    ```javascript
+    const scrollAnimation = scrollAnimations({    
+        element: '#scroll-animation-content'
+    });
+    const smoothScrollBar = scrollAnimation.getScrollBar();
+    const element = document.querySelector('#your-element');
+    smoothScrollBar.addListener(() => {
+        console.log(smoothScrollBar.isVisible(element));
+    }); 
     ```
 
 ## NPM
